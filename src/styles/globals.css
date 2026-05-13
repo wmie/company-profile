@@ -1,0 +1,122 @@
+@import 'tailwindcss';
+
+/* Font face declarations (loaded via Google Fonts in index.html) */
+:root {
+  --font-inter: 'Inter', sans-serif;
+  --font-inter-tight: 'Inter Tight', sans-serif;
+  --font-jetbrains-mono: 'JetBrains Mono', monospace;
+}
+
+/* Tailwind v4 theme config */
+@theme {
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+/* WMIE design tokens */
+:root {
+  --wmie-bg: #0A0A0A;
+  --wmie-surface: #111111;
+  --wmie-surface-highlight: #1A1A1A;
+  --wmie-text: #F5F5F5;
+  --wmie-text-muted: #A3A3A3;
+  --wmie-accent: #8B5CF6;
+  --wmie-accent-dark: #7C3AED;
+  --wmie-border: rgba(255, 255, 255, 0.08);
+  --wmie-surface-alt: #161616;
+}
+
+/* Tailwind v4 inline theme bindings */
+@theme inline {
+  --color-wmie-bg: var(--wmie-bg);
+  --color-wmie-surface: var(--wmie-surface);
+  --color-wmie-surface-highlight: var(--wmie-surface-highlight);
+  --color-wmie-text: var(--wmie-text);
+  --color-wmie-text-muted: var(--wmie-text-muted);
+  --color-wmie-accent: var(--wmie-accent);
+  --color-wmie-accent-dark: var(--wmie-accent-dark);
+  --color-wmie-border: var(--wmie-border);
+  --color-wmie-surface-alt: var(--wmie-surface-alt);
+  --font-display: var(--font-inter-tight);
+  --font-wmie-mono: var(--font-jetbrains-mono);
+}
+
+/* Base reset — data-theme="dark" is set on <html> in index.html */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--wmie-bg);
+  color: var(--wmie-text);
+  font-family: var(--font-inter);
+}
+
+/* ─── wmie Noise Overlay ─── */
+.wmie-noise {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0;
+  animation: wmie-noise-appear 0s 2s forwards;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+@keyframes wmie-noise-appear {
+  to { opacity: 0.03; }
+}
+
+/* ─── Process Cycle Animations ─── */
+@keyframes wmie-spin-orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes wmie-dash-flow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -40; }
+}
+@keyframes wmie-glow-pulse {
+  0%, 100% { box-shadow: 0 0 6px 2px rgba(139,92,246,0.4); }
+  50% { box-shadow: 0 0 14px 4px rgba(139,92,246,0.8); }
+}
+
+.wmie-spin-orbit {
+  animation: wmie-spin-orbit 60s linear infinite;
+}
+.wmie-dash-flow {
+  animation: wmie-dash-flow 4s linear infinite;
+}
+.wmie-glow-pulse {
+  animation: wmie-glow-pulse 2s ease-in-out infinite;
+}
+
+/* ─── Stories Progress Bar ─── */
+.stories-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  gap: 3px;
+  padding: 12px 16px;
+  background: linear-gradient(to bottom, rgba(10, 10, 10, 0.8) 0%, transparent 100%);
+}
+.stories-bar-segment {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  cursor: pointer;
+  transition: background 300ms ease;
+}
+.stories-bar-segment:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.stories-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: #8B5CF6;
+  transition: width 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 0 6px rgba(139, 92, 246, 0.4);
+}

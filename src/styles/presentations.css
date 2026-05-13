@@ -1,0 +1,788 @@
+/* ═══════════════════════════════════════════════════════════════
+   WMIE Presentations — Slide System Styles
+   ═══════════════════════════════════════════════════════════════
+
+   ARCHITECTURE
+   ─────────────
+   Fullscreen slide deck. Each slide is 100vw × 100vh,
+   positioned absolutely in a viewport container. Navigation is
+   scroll/swipe/keyboard driven.
+
+   SLIDE STRUCTURE
+   ─────────────
+   Each slide follows the same HTML pattern:
+     .slide[data-index="N"][data-state="active|above|below"]
+       .slide-bg          → decorative background (grid, orbs, glow)
+       .slide-content      → actual content (flex column, padded)
+       .scroll-indicator   → chevron hint (hidden on mobile)
+
+   STATE MACHINE
+   ─────────────
+   data-state="active"  → visible, transforms to origin
+   data-state="above"   → scrolled past, translated up + blurred
+   data-state="below"   → not yet reached, translated down
+
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── 1. Slide Viewport ─── */
+.slide-viewport {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  overscroll-behavior: none; /* Prevent pull-to-refresh on mobile */
+}
+
+/* ─── 2. Slide System ─── */
+/* Apple-grade easing tokens:
+   Standard:  cubic-bezier(0.22, 1, 0.36, 1)  — "ease-out-expo"
+   Snappy:    cubic-bezier(0.16, 1, 0.3, 1)   — WMIE default
+   Cinematic: cubic-bezier(0.65, 0, 0.35, 1)  — symmetric in-out */
+
+.slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, opacity, filter;
+  z-index: 2;
+  overflow: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  /* Slide transitions: scale + blur + translate for cinematic depth */
+  transition:
+    transform 1000ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.slide::-webkit-scrollbar { display: none; }
+.slide[data-state="active"] {
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  filter: blur(0);
+}
+.slide[data-state="above"] {
+  transform: translateX(-100vw) scale(0.92);
+  opacity: 0;
+  filter: blur(12px);
+}
+.slide[data-state="below"] {
+  transform: translateX(100vw) scale(1.04);
+  opacity: 0;
+  filter: blur(4px);
+}
+
+/* ─── 3. Background Parallax ─── */
+/* bg moves slower than content */
+.slide[data-state="active"] .slide-bg {
+  transform: translateX(0);
+  transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.slide[data-state="above"] .slide-bg {
+  transform: translateX(15vw);
+  transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.slide[data-state="below"] .slide-bg {
+  transform: translateX(-15vw);
+  transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ─── 4. Content Reveals ─── */
+/* blur-to-sharp + translate + scale (Apple focus effect) */
+.slide[data-state="active"] .reveal {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  filter: blur(0);
+}
+.reveal {
+  opacity: 0;
+  transform: translateX(48px) scale(0.97);
+  filter: blur(6px);
+  transition:
+    opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Overlapping stagger — elements start before the previous one finishes */
+.reveal-d1 { transition-delay: 100ms; }
+.reveal-d2 { transition-delay: 220ms; }
+.reveal-d3 { transition-delay: 340ms; }
+.reveal-d4 { transition-delay: 460ms; }
+.reveal-d5 { transition-delay: 580ms; }
+.reveal-d6 { transition-delay: 700ms; }
+
+/* Reset reveals when slide exits (so they re-animate on return) */
+.slide[data-state="above"] .reveal,
+.slide[data-state="below"] .reveal {
+  opacity: 0;
+  transform: translateX(48px) scale(0.97);
+  filter: blur(6px);
+  transition: none;
+}
+
+/* ─── 5. Slide Counter ─── */
+/* pill with backdrop so it never overlaps content */
+.slide-counter {
+  position: absolute;
+  bottom: 32px;
+  right: 48px;
+  z-index: 5;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: rgba(163, 163, 163, 0.8);
+  letter-spacing: 0.1em;
+  transition: opacity 600ms ease;
+  background: rgba(10, 10, 10, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 6px 12px;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ─── 6. Scroll Indicator ─── */
+@keyframes chevron-float {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateY(12px);
+    opacity: 0.6;
+  }
+}
+.scroll-indicator {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: chevron-float 3s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+  z-index: 3;
+}
+.scroll-indicator.hidden {
+  animation: none;
+  opacity: 0;
+  transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ─── 7. Background Depth System ─── */
+.slide-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Perspective grid floor */
+.slide-grid-floor {
+  position: absolute;
+  bottom: 0; left: -20%; right: -20%;
+  height: 70%;
+  background-image:
+    linear-gradient(rgba(139, 92, 246, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.12) 1px, transparent 1px);
+  background-size: 64px 64px;
+  transform: perspective(500px) rotateX(60deg);
+  transform-origin: bottom center;
+  mask-image: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 65%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 65%);
+  animation: grid-drift 40s linear infinite;
+}
+@keyframes grid-drift {
+  0% { background-position: 0 0; }
+  100% { background-position: 64px 64px; }
+}
+
+/* Spotlight */
+.slide-spotlight {
+  position: absolute;
+  width: 120%; height: 120%;
+  top: -20%; left: -10%;
+  background: radial-gradient(
+    ellipse 50% 50% at 35% 50%,
+    rgba(139, 92, 246, 0.10) 0%,
+    rgba(139, 92, 246, 0.04) 40%,
+    transparent 70%
+  );
+}
+
+/* Breathing orbs (light points) */
+.slide-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  animation: orb-breathe 12s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+.slide-orb-1 {
+  width: 600px; height: 600px;
+  top: -10%; left: -5%;
+  background: rgba(139, 92, 246, 0.20);
+}
+.slide-orb-2 {
+  width: 400px; height: 400px;
+  bottom: -8%; right: 10%;
+  background: rgba(139, 92, 246, 0.12);
+  animation-delay: -3s;
+}
+.slide-orb-3 {
+  width: 250px; height: 250px;
+  top: 25%; right: 20%;
+  background: rgba(124, 58, 237, 0.15);
+  animation-delay: -6s;
+}
+@keyframes orb-breathe {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1) translate(0, 0);
+  }
+  33% {
+    opacity: 0.85;
+    transform: scale(1.15) translate(2%, -1%);
+  }
+  66% {
+    opacity: 0.65;
+    transform: scale(1.08) translate(-1%, 2%);
+  }
+}
+
+/* Glow line at bottom */
+.slide-glow-line {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 5%,
+    rgba(139, 92, 246, 0.2) 20%,
+    rgba(139, 92, 246, 0.6) 50%,
+    rgba(139, 92, 246, 0.2) 80%,
+    transparent 95%
+  );
+}
+.slide-glow-line::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: linear-gradient(to top, rgba(139, 92, 246, 0.04), transparent);
+}
+
+/* ─── 8. CTA Glow ─── */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 24px rgba(139, 92, 246, 0.20),
+      0 0 60px rgba(139, 92, 246, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 40px rgba(139, 92, 246, 0.40),
+      0 0 100px rgba(139, 92, 246, 0.15);
+  }
+}
+.cta-glow {
+  animation: glow-pulse 4s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+  transition:
+    transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cta-glow:hover {
+  transform: scale(1.03);
+  animation-play-state: paused;
+  box-shadow:
+    0 0 48px rgba(139, 92, 246, 0.50),
+    0 0 120px rgba(139, 92, 246, 0.20);
+}
+
+/* ─── 9. Stat Counter ─── */
+@keyframes stat-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(32px) scale(0.88);
+    filter: blur(8px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.02);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+.slide[data-state="active"] .stat-value {
+  animation: stat-enter 1100ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.stat-value { opacity: 0; }
+
+/* ─── 10. Section Label ─── */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+.section-label .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  color: #8B5CF6;
+  letter-spacing: 0.05em;
+}
+.section-label .text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #A3A3A3;
+}
+.section-label .line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ─── 11. Service Card ─── */
+.service-card {
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 2px;
+  padding: 40px;
+  transition:
+    border-color 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.service-card:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: translateY(-6px) scale(1.01);
+  box-shadow:
+    0 20px 60px rgba(139, 92, 246, 0.08),
+    0 0 0 1px rgba(139, 92, 246, 0.1);
+}
+
+/* ─── 12. Browser Frame ─── */
+.browser-frame {
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+}
+.browser-frame-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #161616;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.browser-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ─── 13. Phone Frame ─── */
+.phone-frame {
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 32px;
+  padding: 16px;
+  margin: 0 auto;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+  /* Height-driven sizing: fill parent, let aspect-ratio determine width */
+  height: 100%;
+  width: auto;
+  aspect-ratio: 9 / 19.5;
+  display: flex;
+  flex-direction: column;
+}
+.phone-frame-inner {
+  border-radius: 20px;
+  overflow: hidden;
+  flex: 1;
+  background: #1A1A1A;
+}
+.phone-frame-inner > div > div::-webkit-scrollbar,
+.browser-frame-content > div::-webkit-scrollbar {
+  display: none;
+}
+.phone-notch {
+  width: 120px;
+  height: 24px;
+  background: #111111;
+  border-radius: 0 0 16px 16px;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+/* ─── 14. Carousel Controls ─── */
+.carousel-btn {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  background: transparent;
+  color: #A3A3A3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    border-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 300ms ease,
+    background 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.carousel-btn:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #8B5CF6;
+  background: rgba(139, 92, 246, 0.08);
+  transform: scale(1.08);
+}
+.carousel-btn:active {
+  transform: scale(0.95);
+  transition-duration: 100ms;
+}
+
+/* ─── 15. Partner Icons ─── */
+.partner-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0.4;
+  transition:
+    opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.partner-icon:hover {
+  opacity: 0.8;
+  transform: translateY(-2px);
+}
+.partner-icon svg { fill: #F5F5F5; }
+
+/* ─── 16. WMIE Button System (Presentation overrides) ─── */
+.wmie-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.wmie-btn-xl { padding: 24px 56px; font-size: 15px; }
+.wmie-btn-lg { padding: 20px 40px; font-size: 14px; }
+.wmie-btn-md { padding: 16px 32px; font-size: 13px; min-height: 48px; }
+.wmie-btn-primary {
+  background: #8B5CF6;
+  color: white;
+  border: none;
+}
+.wmie-btn-primary:hover { background: #7C3AED; }
+.wmie-btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #A3A3A3;
+}
+.wmie-btn-ghost:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #8B5CF6;
+}
+
+/* ─── WMIE Logo Mark ─── */
+.wmie-mark {
+  font-family: 'Inter Tight', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+}
+
+/* ─── 17. Accent Line ─── */
+.accent-line {
+  width: 56px;
+  height: 2px;
+  background: #8B5CF6;
+}
+
+/* ─── 18. Portfolio Elements ─── */
+.portfolio-media {
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+.portfolio-media-inner {
+  background: #1A1A1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(163, 163, 163, 0.5);
+}
+.portfolio-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 32px;
+  background: linear-gradient(transparent, rgba(10, 10, 10, 0.95));
+}
+.portfolio-metric {
+  font-family: 'Inter Tight', sans-serif;
+  font-weight: 900;
+  color: #8B5CF6;
+}
+
+/* ─── 19. Grid Overlay ─── */
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* ─── 20. Additional Slide Media ─── */
+.additional-slide-media {
+  aspect-ratio: 16 / 9;
+  background: #1A1A1A;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #A3A3A3;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+/* ─── 21. Responsive Breakpoints — removed; replaced by JS viewport scaling ─── */
+
+/* ─── 22. Pulse Dot ─── */
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+  }
+}
+
+/* ─── 23. CTA Scrollbar Hide ─── */
+.cta-slide-content::-webkit-scrollbar { display: none; }
+
+/* ─── 24. Expired View ─── */
+@keyframes expired-fade-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.expired-content {
+  animation: expired-fade-in 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ─── 24b. Slide Viewport Wrapper (mobile scaling) ─── */
+/* Outer container wrapping .slide-viewport on mobile (≤1024px).
+   Centering is done via JS transform, not flexbox. */
+.slide-viewport-wrapper {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  overscroll-behavior: none; /* Prevent pull-to-refresh on mobile */
+  background: #0A0A0A;
+}
+
+/* Mobile GPU optimizations — .mobile-orbs is toggled by JS when isMobile.
+   At 1440×900 canvas, blur transitions and will-change exhaust mobile VRAM. */
+
+/* Don't pre-allocate GPU compositing layers for every slide */
+.mobile-orbs .slide {
+  will-change: auto;
+  /* Instant transitions on mobile — only one slide rendered at a time */
+  transition:
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 300ms ease;
+}
+
+/* No blur on inactive slides — saves ~5MB GPU texture per slide */
+.mobile-orbs .slide[data-state="above"] { filter: none; }
+.mobile-orbs .slide[data-state="below"] { filter: none; }
+
+/* Content reveals: skip blur animation on mobile, use horizontal */
+.mobile-orbs .reveal {
+  filter: none;
+  transform: translateX(48px) scale(0.97);
+  transition:
+    opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Reduced orb sizes + blur for GPU performance */
+.mobile-orbs .slide-orb { filter: blur(30px); }
+.mobile-orbs .slide-orb-1 { width: 200px; height: 200px; }
+.mobile-orbs .slide-orb-2 { width: 150px; height: 150px; }
+.mobile-orbs .slide-orb-3 { width: 100px; height: 100px; }
+
+/* Disable grid floor animation on mobile */
+.mobile-orbs .slide-grid-floor { animation: none; display: none; }
+
+/* Disable spotlight on mobile — saves a large compositing layer */
+.mobile-orbs .slide-spotlight { display: none; }
+
+/* Disable glow line on mobile */
+.mobile-orbs .slide-glow-line { display: none; }
+
+/* Kill continuous CSS animations on non-active slides (saves CPU/GPU) */
+.mobile-orbs .slide[data-state="above"] * { animation-play-state: paused !important; }
+.mobile-orbs .slide[data-state="below"] * { animation-play-state: paused !important; }
+
+/* --- 25. Password Gate --- */
+@keyframes gate-fade-in {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+.gate-content {
+  animation: gate-fade-in 800ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.gate-input {
+  width: 100%;
+  max-width: 320px;
+  height: 48px;
+  padding: 0 16px;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  color: #F5F5F5;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  outline: none;
+  transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gate-input::placeholder {
+  color: rgba(163, 163, 163, 0.4);
+  letter-spacing: 0.1em;
+}
+
+.gate-input:focus {
+  border-color: #8B5CF6;
+  box-shadow: 0 0 0 1px #8B5CF6, 0 0 16px rgba(139, 92, 246, 0.15);
+}
+
+.gate-input.has-error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 1px #ef4444;
+}
+
+@media (max-width: 480px) {
+  .gate-content {
+    padding: 32px 24px !important;
+  }
+  .gate-content h1 {
+    font-size: 28px !important;
+  }
+  .gate-content .wmie-mark {
+    font-size: 40px !important;
+  }
+  .gate-input {
+    max-width: 100%;
+  }
+  /* ExpiredView renders outside the scaled canvas, so it needs its own responsive rules */
+  #expiredView h1 { font-size: 24px !important; }
+  #expiredView p { font-size: 14px !important; }
+}
+
+/* --- 26. Mobile Desktop Disclaimer --- */
+.mobile-disclaimer {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  z-index: 50;
+  background: rgba(17, 17, 17, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 2px;
+  padding: 12px 20px;
+  max-width: calc(100vw - 48px);
+  text-align: center;
+  animation: disclaimer-enter 500ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.mobile-disclaimer.dismissed {
+  animation: disclaimer-exit 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.mobile-disclaimer-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(163, 163, 163, 0.8);
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+}
+
+.mobile-disclaimer-icon {
+  color: #8B5CF6;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.mobile-disclaimer-close {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  background: #1A1A1A;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: #A3A3A3;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 150ms ease;
+}
+
+.mobile-disclaimer-close:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes disclaimer-enter {
+  from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes disclaimer-exit {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to { opacity: 0; transform: translateX(-50%) translateY(16px); }
+}
+
+/* --- 27. Preloader --- */
+@keyframes preloader-pulse {
+  0%, 100% { transform: scaleX(1); opacity: 1; }
+  50% { transform: scaleX(2.5); opacity: 0.5; }
+}
