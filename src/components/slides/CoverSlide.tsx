@@ -1,20 +1,31 @@
 import React from 'react'
 import { content } from '../../data/content'
+import { SlideVideo } from '../core/SlideVideo'
 
-const OFFICE_IMG = 'https://etechusbc.com/web/image/1309-a686a4f2/ingresso_cover.webp'
+export type CoverChapter = { label: string; slide: number }
 
-export const CoverSlide: React.FC = () => {
+type CoverSlideProps = {
+  /** Chapter index derived in App.tsx from the deck order. */
+  chapters: CoverChapter[]
+}
+
+export const CoverSlide: React.FC<CoverSlideProps> = ({ chapters }) => {
   return (
     <>
-      {/* Background image with fade overlay for contrast */}
-      <div
-        className="absolute inset-0 z-[1]"
-        style={{
-          backgroundImage: `url(${OFFICE_IMG})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
+      {/* Ambient background video with fade overlays for contrast */}
+      <div className="absolute inset-0 z-[1]" style={{ overflow: 'hidden' }}>
+        <SlideVideo
+          src={content.cover.ambientVideo}
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            opacity: 0.35,
+          }}
+        />
         {/* Dark gradient overlay — strong left-to-right fade for text readability */}
         <div
           className="absolute inset-0"
@@ -96,13 +107,7 @@ export const CoverSlide: React.FC = () => {
 
         {/* Clickable chapter index */}
         <nav className="reveal reveal-d5 mt-auto flex gap-6 items-center">
-          {[
-            { label: 'Chi siamo', slide: 1 },
-            { label: 'Servizi', slide: 6 },
-            { label: 'Case Studies', slide: 10 },
-            { label: 'Prodotti', slide: 23 },
-            { label: 'Team', slide: 30 },
-          ].map((ch, i) => (
+          {chapters.map((ch, i) => (
             <button
               key={i}
               onClick={() => window.dispatchEvent(new CustomEvent('goToSlide', { detail: ch.slide }))}

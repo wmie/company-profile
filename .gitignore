@@ -30,3 +30,9 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+
+# Local asset archives
+*.zip
+
+# QA screenshots
+.qa/
