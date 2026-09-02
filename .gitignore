@@ -30,3 +30,6 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+
+# Local asset archives
+*.zip

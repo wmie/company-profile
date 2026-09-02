@@ -3,7 +3,14 @@ import { content } from '../../data/content'
 
 const OFFICE_IMG = 'https://etechusbc.com/web/image/1309-a686a4f2/ingresso_cover.webp'
 
-export const CoverSlide: React.FC = () => {
+export type CoverChapter = { label: string; slide: number }
+
+type CoverSlideProps = {
+  /** Chapter index derived in App.tsx from the deck order. */
+  chapters: CoverChapter[]
+}
+
+export const CoverSlide: React.FC<CoverSlideProps> = ({ chapters }) => {
   return (
     <>
       {/* Background image with fade overlay for contrast */}
@@ -96,13 +103,7 @@ export const CoverSlide: React.FC = () => {
 
         {/* Clickable chapter index */}
         <nav className="reveal reveal-d5 mt-auto flex gap-6 items-center">
-          {[
-            { label: 'Chi siamo', slide: 1 },
-            { label: 'Servizi', slide: 6 },
-            { label: 'Case Studies', slide: 10 },
-            { label: 'Prodotti', slide: 23 },
-            { label: 'Team', slide: 30 },
-          ].map((ch, i) => (
+          {chapters.map((ch, i) => (
             <button
               key={i}
               onClick={() => window.dispatchEvent(new CustomEvent('goToSlide', { detail: ch.slide }))}

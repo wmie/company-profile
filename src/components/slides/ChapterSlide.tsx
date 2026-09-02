@@ -1,9 +1,15 @@
 import React from 'react'
 
+export type ChapterStat = { value: string; label: string }
+
 type ChapterSlideProps = {
   number: string
   title: string
   subtitle?: string
+  /** Mono pill above the number, e.g. "Shopify Partner" (Agent A renders it). */
+  badge?: string
+  /** Up to 3 stats rendered under the subtitle (Agent A renders them). */
+  stats?: ChapterStat[]
 }
 
 export const ChapterSlide: React.FC<ChapterSlideProps> = ({ number, title, subtitle }) => {

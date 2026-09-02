@@ -1,8 +1,62 @@
+/* ─────────────────────────────────────────────────────────────
+   WMIE Company Profile — content (director-owned)
+   All copy lives here. Components read, never write.
+   Facts come from the case studies published in the wmie.it CMS.
+   ───────────────────────────────────────────────────────────── */
+
+/* ─── Media (Vercel Blob, public CDN, no binaries in the repo) ─── */
+export const BLOB = 'https://drrmobjnk8tvuzmv.public.blob.vercel-storage.com'
+const blob = (file: string) => `${BLOB}/${file}`
+
+export const media = {
+  cao: {
+    metodoSet: blob('cao-metodo-set.mp4'),
+    metodoPagina: blob('cao-metodo-pagina.mp4'),
+    metodoCategorie: blob('cao-metodo-categorie.mp4'),
+    formaHero: blob('cao-forma-hero.mp4'),
+    alphaDemo: blob('cao-3d-alpha-demo.mp4'),
+    qualitaTimeline: blob('cao-qualita-timeline.mp4'),
+    storieDrag: blob('cao-storie-drag.mp4'),
+    catalogo: blob('cao-catalogo.mp4'),
+    assistenteDop: blob('cao-assistente-dop.mp4'),
+    eventsMinisite: blob('cao-events-minisite.mp4'),
+  },
+  tendenze: {
+    schedaProdotto: blob('tendenze-scheda-prodotto.jpg'),
+    selettore: blob('tendenze-selettore-4x3.jpg'),
+    collection: blob('tendenze-collection-4x3.jpg'),
+    mailShopify: blob('tendenze-mail-shopify.jpg'),
+  },
+  collu: {
+    collection: blob('collu-collection.jpg'),
+    schedaProdotto: blob('collu-scheda-prodotto-4x3.jpg'),
+    home: blob('collu-home-4x3.jpg'),
+  },
+}
+
+export type MediaSliderItem = {
+  type: 'video' | 'image'
+  src: string
+  label: string
+  caption?: string
+}
+
+const videoMockups = [
+  { url: 'https://bento.wmie.it/wmie/Documents/portfolio/ceowelcomingitaly.webm', caption: 'C&O Welcoming Italy' },
+  { url: 'https://bento.wmie.it/wmie/Documents/portfolio/guilds.webm', caption: 'Guilds' },
+  { url: 'https://bento.wmie.it/wmie/Documents/portfolio/construction-concept.webm', caption: 'Construction Concept' },
+  { url: 'https://bento.wmie.it/wmie/Documents/portfolio/pharma-concept.webm', caption: 'Pharma Concept' },
+  { url: 'https://bento.wmie.it/wmie/Documents/portfolio/construction-concept-2.webm', caption: 'Construction Concept 2' },
+  { url: 'https://bento.wmie.it/wmie/Documents/portfolio/boat-concept.webm', caption: 'Boat Concept' },
+  { url: 'https://bento.wmie.it/wmie/Documents/portfolio/enermed.webm', caption: 'Enermed' },
+]
+
 export const content = {
   cover: {
     title: 'Company Profile 2026',
     tagline: 'Engineering Digital Systems.\nDelivering Business Outcomes.',
     body: 'Progettiamo infrastrutture digitali che generano valore e crescono con il vostro business.',
+    ambientVideo: media.cao.formaHero,
   },
 
   about: {
@@ -72,7 +126,7 @@ export const content = {
       },
       {
         title: 'E-Commerce',
-        desc: 'Dove il traffico diventa fatturato. Shopify, custom o headless, ottimizzato per ridurre ogni frizione tra "voglio comprare" e "ho comprato". Ogni barriera rimossa è margine recuperato.',
+        desc: 'Dove il traffico diventa fatturato. Shopify e Shopify Plus, custom o headless, presidiati dalla scheda prodotto al gestionale. Ogni frizione rimossa tra "voglio comprare" e "ho comprato" è margine recuperato; le automazioni si provano in dry run con Collaudo prima di toccare il catalogo.',
         feeds: 'Alimenta: App & Web App, AI & Automazioni (analisi comportamento)',
       },
       {
@@ -153,6 +207,7 @@ export const content = {
     ],
   },
 
+  /* ─── C&O Welcoming Italy (unchanged) ─── */
   caseStudy: {
     headline: 'Da un sito che non funzionava a +52% di prenotazioni dirette',
     client: 'C&O Welcoming Italy, gestione di 30+ strutture ricettive di lusso, 100+ posti letto, ~3.000 ospiti per stagione estiva.',
@@ -172,15 +227,224 @@ export const content = {
     bottomNote: 'Ore di lavoro manuale eliminate ogni settimana.',
   },
 
-  videoMockups: [
-    { url: 'https://bento.wmie.it/wmie/Documents/portfolio/ceowelcomingitaly.webm', caption: 'C&O Welcoming Italy' },
-    { url: 'https://bento.wmie.it/wmie/Documents/portfolio/guilds.webm', caption: 'Guilds' },
-    { url: 'https://bento.wmie.it/wmie/Documents/portfolio/construction-concept.webm', caption: 'Construction Concept' },
-    { url: 'https://bento.wmie.it/wmie/Documents/portfolio/pharma-concept.webm', caption: 'Pharma Concept' },
-    { url: 'https://bento.wmie.it/wmie/Documents/portfolio/construction-concept-2.webm', caption: 'Construction Concept 2' },
-    { url: 'https://bento.wmie.it/wmie/Documents/portfolio/boat-concept.webm', caption: 'Boat Concept' },
-    { url: 'https://bento.wmie.it/wmie/Documents/portfolio/enermed.webm', caption: 'Enermed' },
-  ],
+  /* ─── New case studies (Q4 2026) ─── */
+  caseStudies: {
+    cao: {
+      sectionNumber: '06',
+      sectionText: 'Case Study',
+      headline: 'Il formaggio in 3D che pesa quanto',
+      headlineAccent: 'una foto',
+      intro: 'CAO Formaggi — Cooperativa casearia sarda dal 1966, 700 soci, Pecorino Sardo DOP e Pecorino Romano DOP esportati in oltre 20 Paesi. Ogni trattativa con i buyer esteri si gioca sul far percepire la qualità prima dell\'assaggio.',
+      challenge: {
+        title: 'La sfida',
+        body: 'I sales representative si presentavano ai buyer con PDF e cataloghi cartacei, che comprimono crosta, pasta e taglio in una foto statica. Serviva uno strumento digitale degno del prodotto, leggero abbastanza da aprirsi ovunque nel mondo si trovi il buyer.',
+        metrics: [
+          { value: 'PDF', label: 'Strumenti di vendita obsoleti', desc: 'Materiali che non rendevano giustizia al prodotto.' },
+          { value: '20+', label: 'Paesi da servire, ognuno diverso', desc: 'Buyer su reti e dispositivi molto diversi tra loro.' },
+          { value: '1966', label: 'Un marchio storico', desc: '700 soci e sessant\'anni di storia meritano una presenza online al loro livello.' },
+        ],
+      },
+      intervention: {
+        title: 'L\'intervento',
+        items: [
+          {
+            label: 'Il 3D servito come video trasparente',
+            desc: 'Shooting fotografico in sede, rimodellazione 3D sul prodotto reale, 72 fotogrammi a 60 fps. Il render viaggia come stacked-alpha video in AV1 (HEVC per i Safari meno recenti) e il browser lo ricompone in WebGL: una scheda prodotto passa da 30 MB a 564 KB.',
+          },
+          {
+            label: 'Storytelling di filiera',
+            desc: 'Dal territorio al lotto: transizioni GSAP che portano il buyer dalla curiosità alla comprensione del perché quel formaggio vale il suo prezzo. Le storie dei soci si sfogliano come un mazzo di carte.',
+          },
+          {
+            label: 'Assistente AI con la mascotte CAO',
+            desc: 'Un agente RAG sul catalogo reale: suggerisce l\'abbinamento giusto mentre il buyer guarda un prodotto e consiglia le referenze adatte al suo mercato. Una guida competente a qualsiasi ora, in ogni fuso orario.',
+          },
+        ],
+      },
+      stats: [
+        { value: '564 KB', label: 'Una scheda prodotto in 3D', note: 'da 30 MB di render' },
+        { value: '60 fps', label: '72 fotogrammi per animazione', note: 'forma intera e taglio, per ogni formaggio' },
+        { value: '20+', label: 'Paesi, lingua rilevata dal dispositivo', note: 'Microsoft Clarity sulle sessioni reali' },
+      ],
+      bottomNote: 'Metodo wmie: render approvati dal management prima di una riga di codice. Build completa in staging, lancio in arrivo.',
+    },
+
+    caoEvents: {
+      sectionNumber: '07',
+      sectionText: 'Case Study',
+      headline: 'Lo stesso cliente, il vincolo opposto: 400 smartphone su una rete',
+      headlineAccent: 'satura',
+      intro: 'CAO Formaggi · Event minisite — Nato per la presentazione del BMW iX3 alla Rinascente di Cagliari, marzo 2025. Oggi è il catalogo che CAO porta alle fiere internazionali: un QR code sul totem dello stand, la pagina si apre nella lingua del telefono.',
+      items: [
+        {
+          label: 'Architettura zero-compute',
+          desc: 'Next.js in static export: HTML puro servito dalla CDN edge, nessun server runtime. I picchi di traffico in sala non toccano nessuna macchina.',
+        },
+        {
+          label: 'Ogni asset ricodificato',
+          desc: 'Font su misura con subsetting (-78%), immagini AVIF, video ricodificati (-75%). L\'identità intera, stemma e tipografia compresi, in un budget da 600 KB.',
+        },
+        {
+          label: 'Lingua senza selettore',
+          desc: 'Redirect 307 sulla lingua del dispositivo, prima che la pagina si disegni: italiano o inglese, senza un tocco in più.',
+        },
+      ],
+      stats: [
+        { value: '95', label: 'Lighthouse Performance', note: 'mobile · TBT 0 ms · CLS 0' },
+        { value: '-85%', label: 'First-load weight', note: 'da ~4 MB a ~600 KB' },
+        { value: '0', label: 'Cataloghi stampati', note: 'la carta sostituita dal QR sul totem' },
+      ],
+      videoCaption: 'Caricamento a freddo su smartphone: stemma, claim, marquee dei formaggi, reveal fotografico e fascia "Dal 1966".',
+    },
+
+    shopify: {
+      number: '03 · E-commerce',
+      badge: 'Shopify Partner',
+      title: 'Il braccio tecnico dello store',
+      subtitle: 'Due store multimarca da oltre 20.000 articoli, un SaaS nato dal lavoro sul campo e un bug di piattaforma corretto da Shopify. Presidiamo la parte tecnologica dell\'e-commerce, dalla scheda prodotto al gestionale.',
+      stats: [
+        { value: '+18%', label: 'Conversione a parità di traffico · Tendenze Store' },
+        { value: '13.835', label: 'Prodotti riportati sui canali di vendita · Gruppo Collu' },
+        { value: '22 giorni', label: 'Dal report wmie al fix di Shopify in produzione' },
+      ],
+    },
+
+    tendenze: {
+      sectionNumber: '08',
+      sectionText: 'Case Study',
+      headline: 'Dal selettore delle varianti al bug corretto da',
+      headlineAccent: 'Shopify',
+      intro: 'Tendenze Store — 22 punti vendita in 14 città della Sardegna e uno store Shopify Plus da oltre 20.000 articoli, da Emporio Armani a Tommy Hilfiger. wmie ne presidia la parte tecnologica, in tandem con Sartoria del Marketing che ne cura il marketing.',
+      challenge: {
+        title: 'La sfida',
+        body: 'Lo store arriva a wmie già costruito. Sulla scheda prodotto il selettore delle varianti non arrivava sotto gli occhi di chi compra: chi apriva una maglietta non vedeva che esisteva anche in rosso o in un\'altra taglia. Il feed di Google Merchant non conosceva il margine. E su Shopify Plus ogni modifica tocca lo store mentre vende.',
+        metrics: [
+          { value: '20.000+', label: 'Articoli con varianti invisibili', desc: 'Un problema di interfaccia che pesa su ogni sessione.' },
+          { value: '24h', label: 'Un feed senza il dato di margine', desc: 'Il budget finiva sui prodotti che si vendono, non su quelli che guadagnano.' },
+          { value: '0', label: 'Spazio per sbagliare', desc: 'Un errore in produzione si paga sulle vendite della giornata.' },
+        ],
+      },
+      intervention: {
+        title: 'L\'intervento',
+        items: [
+          {
+            label: 'La scheda prodotto che vende',
+            desc: 'Selettore delle taglie in vista appena si apre il prodotto, pulsanti a larghezza uguale con target di tocco ampi, guida alle taglie a un tocco. Nella prima settimana la conversione sale del 18% a parità di traffico.',
+          },
+          {
+            label: 'I margini dentro Google Merchant',
+            desc: 'Un flusso quotidiano legge il margine, tagga i prodotti che fanno guadagnare lo store e li porta nel feed. Da qui nasce Collaudo, il SaaS wmie che prova le automazioni in dry run prima di toccare il catalogo vero.',
+          },
+          {
+            label: 'Il bug di piattaforma',
+            desc: '5 agosto: la homepage esce vuota per l\'80% delle richieste, con status 200 e log puliti. wmie costruisce la riproduzione, esclude otto ipotesi e consegna a Shopify request-id appaiati. Il 27 agosto il fix è in produzione nello Storefront Renderer.',
+          },
+        ],
+      },
+      stats: [
+        { value: '+18%', label: 'Conversione a parità di traffico', note: 'rilevato sui dati dello store' },
+        { value: '22 giorni', label: 'Dal report al fix di Shopify', note: 'root cause confermata per iscritto' },
+        { value: '30/30', label: 'Richieste corrette dopo il workaround', note: 'da ~80% di homepage vuote' },
+      ],
+      bottomNote: 'Quando il guasto sta sotto la piattaforma, un corso sulla piattaforma non basta: servono le competenze di una software house.',
+    },
+
+    collu: {
+      sectionNumber: '09',
+      sectionText: 'Case Study',
+      headline: 'Il ponte tecnico fra gestionale, piattaforma e',
+      headlineAccent: 'campagne',
+      intro: 'Gruppo Collu — Moda multimarca dalla Sardegna, circa 20.000 prodotti su gruppocollu.it. Lo store gira su Shopify e prende i dati dal gestionale Atelier di Zucchetti. wmie entra su incarico di Sartoria del Marketing come referente tecnico dello store.',
+      challenge: {
+        title: 'La sfida',
+        body: 'Sullo store i prodotti c\'erano, ma senza canali di vendita attivi: in vetrina e su Google Merchant ne compariva una frazione. Il passaggio al gestionale aveva riscritto tutte le URL, e anni di traffico organico e campagne portavano su pagine inesistenti. Quattro fornitori, ognuno con ragione sulla propria parte, e nessuno con il quadro completo.',
+        metrics: [
+          { value: '13.835', label: 'Prodotti caricati ma invisibili', desc: 'Foto, prezzo e varianti al loro posto, canali di vendita spenti.' },
+          { value: '404', label: 'Le URL riscritte dal gestionale', desc: 'Traffico e campagne su pagine che non esistevano più.' },
+          { value: '4', label: 'Fornitori, quattro pezzi di verità', desc: 'Gestionale, connettore, piattaforma e campagne in mani diverse.' },
+        ],
+      },
+      intervention: {
+        title: 'L\'intervento',
+        items: [
+          {
+            label: 'Le URL prodotto, ricostruite',
+            desc: 'Uno script incrocia barcode, SKU e dati di catalogo per associare ogni prodotto vecchio al suo nuovo: 6.449 redirect prodotto-verso-prodotto, circa 300 link recuperati lato SEO.',
+          },
+          {
+            label: 'Il catalogo torna davanti ai clienti',
+            desc: 'wmie isola i 13.835 articoli fuori dai canali, si fa spiegare dal fornitore del gestionale come il connettore decide la pubblicazione e riattiva in blocco prodotti e collezioni. Di nuovo in vetrina e su Google Merchant.',
+          },
+          {
+            label: 'Dal sintomo alla causa',
+            desc: 'Taglie che non esistono, marchi diversi nella stessa scheda: wmie non gira la segnalazione. Ricostruisce cosa fa il connettore, isola la regola e la consegna al fornitore che può chiuderla, scritta come il suo reparto sviluppo la può lavorare.',
+          },
+        ],
+      },
+      stats: [
+        { value: '13.835', label: 'Prodotti riportati sui canali', note: 'di nuovo su Google Merchant' },
+        { value: '6.449', label: 'Redirect prodotto-verso-prodotto', note: '~300 link recuperati lato SEO' },
+        { value: '6 mesi', label: 'Dall\'emergenza alle evolutive', note: 'feed, saldi, interfaccia, accessibilità' },
+      ],
+      bottomNote: 'Un sintomo apre un ticket e resta lì. Una causa provata sui dati arriva a destinazione e si chiude.',
+    },
+  },
+
+  /* ─── Media sliders ─── */
+  sliders: {
+    caoMetodo: {
+      eyebrow: 'CAO Formaggi · Il metodo',
+      caption: 'Prima i render, poi il codice: le pagine approvate dal management prima dello sviluppo.',
+      items: [
+        { type: 'video', src: media.cao.metodoSet, label: 'Set', caption: 'Le pagine di Pastorino Sardo, Molissardo e Gran CAO nei render presentati al management.' },
+        { type: 'video', src: media.cao.metodoPagina, label: 'Pagina prodotto', caption: 'Il render della pagina Molissardo al Tartufo, dall\'apertura scura ai valori nutrizionali.' },
+        { type: 'video', src: media.cao.metodoCategorie, label: 'Categorie', caption: 'Le categorie di prodotto in preview, con le pill colorate che entrano in scena.' },
+      ] as MediaSliderItem[],
+    },
+    caoSito: {
+      eyebrow: 'CAO Formaggi · Il sito',
+      caption: 'La build in staging: 3D ultra-leggero, storytelling di filiera, assistente AI.',
+      items: [
+        { type: 'video', src: media.cao.formaHero, label: 'Forma 3D', caption: 'La forma del Gran CAO in pagina: la resa di un render 3D, il peso di una clip leggera.' },
+        { type: 'video', src: media.cao.alphaDemo, label: 'Alpha demo', caption: 'A sinistra colore e maschera in un file solo; a destra il browser li ricompone sopra testo e fondi.' },
+        { type: 'video', src: media.cao.qualitaTimeline, label: 'Filiera', caption: 'Dal latte al lotto: le tappe del processo si scoprono una alla volta, scendendo.' },
+        { type: 'video', src: media.cao.storieDrag, label: 'Storie dei soci', caption: 'Le storie dei soci si sfogliano trascinando, come un mazzo di carte: dal 1966 in avanti.' },
+        { type: 'video', src: media.cao.catalogo, label: 'Catalogo', caption: 'Un assaggio della pagina catalogo, dalla build del sito.' },
+        { type: 'video', src: media.cao.assistenteDop, label: 'Assistente AI', caption: 'La mascotte CAO risponde sul catalogo reale e suggerisce gli abbinamenti.' },
+      ] as MediaSliderItem[],
+    },
+    tendenze: {
+      eyebrow: 'Tendenze Store · tendenzestore.com',
+      caption: 'La scheda prodotto oggi e l\'email con cui Shopify conferma root cause e fix.',
+      items: [
+        { type: 'image', src: media.tendenze.schedaProdotto, label: 'Scheda prodotto', caption: 'La scheda prodotto oggi: il selettore delle taglie in vista appena si apre il prodotto.' },
+        { type: 'image', src: media.tendenze.selettore, label: 'Selettore', caption: 'Le taglie, la guida e lo stato di selezione in un colpo d\'occhio.' },
+        { type: 'image', src: media.tendenze.collection, label: 'Collection', caption: 'La collection donna, con le taglie già visibili sulla card.' },
+        { type: 'image', src: media.tendenze.mailShopify, label: 'Risposta di Shopify', caption: 'L\'email con cui Shopify chiude il ticket il 27 agosto: root cause confermata, fix in produzione.' },
+      ] as MediaSliderItem[],
+    },
+    collu: {
+      eyebrow: 'Gruppo Collu · gruppocollu.it',
+      caption: 'Il catalogo davanti a chi compra.',
+      items: [
+        { type: 'image', src: media.collu.collection, label: 'Collection', caption: 'La sezione donna con migliaia di articoli: la stessa parte di catalogo che restava fuori dai canali di vendita.' },
+        { type: 'image', src: media.collu.schedaProdotto, label: 'Scheda prodotto', caption: 'La scheda prodotto dello store ereditato, con taglie e disponibilità.' },
+        { type: 'image', src: media.collu.home, label: 'Home e menu', caption: 'La home e il menu portato sulle URL corrette delle collezioni.' },
+      ] as MediaSliderItem[],
+    },
+    concepts: {
+      eyebrow: 'Design concepts',
+      caption: 'Esplorazioni di design: direzioni visive che testiamo prima di proporle ai clienti.',
+      items: [
+        { type: 'video', src: videoMockups[2].url, label: 'Construction' },
+        { type: 'video', src: videoMockups[3].url, label: 'Pharma' },
+        { type: 'video', src: videoMockups[4].url, label: 'Construction 2' },
+        { type: 'video', src: videoMockups[5].url, label: 'Boat' },
+      ] as MediaSliderItem[],
+    },
+  },
+
+  videoMockups,
 
   products: {
     headline: 'Costruiamo prima per noi. Poi per voi.',
@@ -188,8 +452,8 @@ export const content = {
     items: [
       {
         name: 'Swiftrise',
-        desc: 'CDN globale con 750+ PoP e Cloud IDE integrato, infrastruttura interamente su AWS.',
-        competence: 'Architettura cloud a scala globale, gestione infrastruttura distribuita, ottimizzazione costi AWS.',
+        desc: 'CDN per codice e asset costruita sopra Amazon CloudFront: zero cache sul browser, tutto all\'edge, purge con effetto immediato.',
+        competence: 'Architettura cloud a scala globale, mani dirette sull\'edge, ottimizzazione costi AWS.',
       },
       {
         name: 'Cream Experiences',
@@ -198,21 +462,27 @@ export const content = {
       },
       {
         name: 'Quella',
-        desc: 'Portale immobiliare AI-powered. L\'utente descrive il suo stile di vita, l\'AI trova la casa giusta.',
+        desc: 'Portale immobiliare AI-first. L\'utente descrive il suo stile di vita, il motore di raccomandazione ordina gli immobili per compatibilità.',
         competence: 'Integrazione AI in prodotti reali con utenti non tecnici.',
-        grant: 'Ha completato il programma di innovazione europeo EINS Spoke 4, ricevendo un grant di 70k€.',
+        grantBadge: 'e.INS Spoke 4 · PNRR — Grant da 50.000 $',
+        grant: 'Selezionata dal programma e.INS Spoke 4 (PNRR, capofila la Camera di Commercio di Sassari) con l\'MVP funzionante: tutte le fasi di coaching e advisory superate, grant da 50.000 $ in servizi.',
         link: 'https://www.linkedin.com/posts/wmie_siamo-onesti-accendere-la-tv-oggi-%C3%A8-un-rischio-activity-7419347998624632833-PNmo?utm_medium=ios_app&rcm=ACoAADRmksUBoPDzgsdSXiNwVvS-akcw0_BvJBk&utm_source=social_share_send&utm_campaign=copy_link',
         linkLabel: 'Il nostro post a riguardo',
       },
       {
         name: 'Pigeon.zip',
-        desc: 'Social file sharing anonimo con scadenza automatica.',
-        competence: 'Progettazione UX per utenti non tecnici, architettura privacy-first con gestione automatica del ciclo di vita dei dati.',
+        desc: 'Trasferimento file senza limiti, gratuito e senza registrazione: il file non passa mai dal server, carica dritto sullo storage.',
+        competence: 'Architettura cloud a costo zero di compute: firme a tempo, un solo hop verso lo storage.',
       },
       {
         name: 'Cards',
-        desc: 'Biglietto da visita digitale con file sharing e notifiche push.',
+        desc: 'Biglietto da visita digitale su chip NFC con fallback QR, nessuna app. Progettato, sviluppato e venduto in autonomia: 100+ ordini al pre-lancio.',
         competence: 'Ideazione, sviluppo e rilascio di micro-prodotti funzionali in tempi rapidi. Dalla prima riga di codice al prodotto live.',
+      },
+      {
+        name: 'Collaudo',
+        desc: 'SaaS Shopify per scrivere automazioni in codice e provarle in dry run prima di applicarle al catalogo. Nato dal lavoro su Tendenze Store, oggi sullo Shopify App Store.',
+        competence: 'Da un problema di un cliente a un prodotto a mercato; sicurezza operativa sugli store Shopify Plus.',
       },
     ],
     bottomText: 'Ogni problema che incontriamo e risolviamo su un nostro prodotto diventa un pattern che replichiamo nei progetti cliente.',
@@ -228,16 +498,34 @@ export const content = {
         problem: 'Sito WordPress non mantenuto, prenotazioni dirette non funzionanti, dipendenza da OTA con commissioni del 15-20%.',
         intervention: 'Ricostruzione completa dell\'ecosistema digitale. Sito, channel manager, flusso di prenotazione.',
         metric: '+52%',
-        metricLabel: 'prenotazioni dirette / Risparmio fino al 20% per prenotazione vs OTA / 30 strutture gestite da un unico sistema',
+        metricLabel: 'prenotazioni dirette / Risparmio fino al 20% per prenotazione vs OTA',
       },
       {
         name: 'CAO Formaggi',
         country: 'Italia',
-        context: 'Caseificio multinazionale, export globale.',
-        problem: 'I sales rep internazionali non avevano uno strumento digitale per presentare i prodotti ai buyer esteri.',
-        intervention: 'Sito storytelling con modelli 3D interattivi di ogni formaggio. L\'utente lo esplora e lo "taglia" come se lo avesse in mano.',
-        metric: 'WIP',
-        metricLabel: 'Work in progress / NDA',
+        context: 'Cooperativa casearia dal 1966, export in oltre 20 Paesi.',
+        problem: 'PDF e cataloghi cartacei per un prodotto che va percepito prima dell\'assaggio.',
+        intervention: 'Sito-strumento con formaggi in 3D serviti come video trasparente ultra-leggero, storytelling di filiera e assistente AI. Più il minisite per le fiere.',
+        metric: '564 KB',
+        metricLabel: 'una scheda prodotto in 3D, da 30 MB di render / 95 Lighthouse sul minisite eventi',
+      },
+      {
+        name: 'Tendenze Store',
+        country: 'Italia',
+        context: 'Shopify Plus, 20.000+ articoli, 22 punti vendita.',
+        problem: 'Varianti invisibili sulla scheda prodotto, feed senza margine, un bug di piattaforma.',
+        intervention: 'Fix alla scheda prodotto, automazione dei margini su Google Merchant, report che porta Shopify a correggere lo Storefront Renderer.',
+        metric: '+18%',
+        metricLabel: 'conversione a parità di traffico / Fix Shopify in produzione in 22 giorni',
+      },
+      {
+        name: 'Gruppo Collu',
+        country: 'Italia',
+        context: 'Shopify + gestionale Atelier, ~20.000 prodotti.',
+        problem: '13.835 prodotti fuori dai canali di vendita, URL riscritte, quattro fornitori senza il quadro completo.',
+        intervention: '6.449 redirect, catalogo riattivato, un solo referente tecnico fra gestionale, piattaforma e campagne.',
+        metric: '13.835',
+        metricLabel: 'prodotti riportati sui canali / 6 mesi dall\'emergenza alle evolutive',
       },
       {
         name: 'Enermed',
@@ -246,25 +534,16 @@ export const content = {
         problem: 'Un prodotto innovativo (smart meter) difficile da comunicare ai clienti.',
         intervention: 'UI/UX completa con modello 3D interattivo dello smart meter per rendere tangibile l\'offerta tecnologica.',
         metric: '3 min',
-        metricLabel: 'Dwell Time / Strumento di comunicazione per il team commerciale e per investor relations.',
+        metricLabel: 'Dwell Time / Strumento per il team commerciale e per investor relations',
       },
       {
-        name: 'W2EW',
-        country: 'Paesi Bassi',
-        context: 'Progetto Horizon Europe 2020, grant €6M.',
-        problem: 'Necessità di comunicare avanzamenti alla Commissione Europea e attrarre nuovi investitori su un progetto tecnico complesso.',
-        intervention: 'Sito web che traduce complessità tecnica in comunicazione chiara per stakeholder istituzionali.',
-        metric: '4 min',
-        metricLabel: 'Dwell Time / Ha contribuito ad attrarre nuovi investimenti nel progetto.',
-      },
-      {
-        name: 'Guilds',
-        country: 'Italia',
-        context: 'Progetto Horizon 2020, fondi UE.',
-        problem: 'Spiegare un sistema di certificazione professionale su blockchain a un pubblico non tecnico.',
-        intervention: 'Sito web con oggetti 3D interattivi che rendono comprensibile un concetto astratto.',
-        metric: '5 min',
-        metricLabel: 'Dwell Time / Ha contribuito a trovare nuovi fondi e a costruire una community attiva.',
+        name: 'W2EW + Guilds',
+        country: 'Paesi Bassi · Italia',
+        context: 'Due progetti Horizon 2020: W2EW (grant €6M) e Guilds (certificazioni su blockchain).',
+        problem: 'Comunicare avanzamenti tecnici complessi a Commissione Europea, investitori e community non tecniche.',
+        intervention: 'Siti che traducono la complessità in comunicazione chiara, con oggetti 3D interattivi.',
+        metric: '4-5 min',
+        metricLabel: 'Dwell Time / Nuovi investimenti e fondi attratti sui due progetti',
       },
     ],
     bottomNote: 'Ogni progetto è sviluppato per ottenere il massimo punteggio sui Core Web Vitals di Google, indipendentemente dalla complessità.',
