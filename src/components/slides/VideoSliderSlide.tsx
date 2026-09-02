@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { useSlideActive } from '../core/useSlideActive'
 
 type VideoSliderSlideProps = {
   videos: { url: string; label: string }[]
@@ -7,9 +8,33 @@ type VideoSliderSlideProps = {
 
 export const VideoSliderSlide: React.FC<VideoSliderSlideProps> = ({ videos, caption }) => {
   const [active, setActive] = useState(0)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([])
+  /* Follow the parent slide state: nothing plays while the slide is off-screen. */
+  const slideVisible = useSlideActive(rootRef)
+
+  /* Only the selected video plays; the others are paused and rewound. */
+  useEffect(() => {
+    videoRefs.current.forEach((video, i) => {
+      if (!video) return
+      if (i !== active) {
+        video.pause()
+        video.currentTime = 0
+        return
+      }
+      if (slideVisible) {
+        void video.play().catch(() => {})
+      } else {
+        video.pause()
+      }
+    })
+  }, [active, slideVisible, videos.length])
 
   return (
-    <div className="p-12 max-w-[1400px] mx-auto w-full relative z-[2] h-full flex flex-col items-center justify-center">
+    <div
+      ref={rootRef}
+      className="p-12 max-w-[1400px] mx-auto w-full relative z-[2] h-full flex flex-col items-center justify-center"
+    >
       {/* Browser frame */}
       <div className="browser-frame" style={{ maxWidth: '1100px' }}>
         <div className="browser-frame-bar" style={{ justifyContent: 'space-between' }}>
@@ -48,8 +73,11 @@ export const VideoSliderSlide: React.FC<VideoSliderSlideProps> = ({ videos, capt
           {videos.map((v, i) => (
             <video
               key={v.url}
+              ref={(el) => {
+                videoRefs.current[i] = el
+              }}
               src={v.url}
-              autoPlay
+              autoPlay={i === active}
               muted
               loop
               playsInline

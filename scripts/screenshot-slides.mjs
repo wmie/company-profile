@@ -9,14 +9,25 @@
  * plus console errors and HTTP >= 400 responses.
  */
 import { createRequire } from 'node:module'
-import { mkdirSync } from 'node:fs'
+import { mkdirSync, realpathSync } from 'node:fs'
 import path from 'node:path'
 
+// Resolve `playwright` through @playwright/test (its dependency). The symlink is
+// resolved to its pnpm store path first, where `playwright` sits as a sibling.
 const PLAYWRIGHT_HOST =
   process.env.PLAYWRIGHT_HOST ??
-  '/Users/enrico/Documents/Frontend/WMIE Frontend/Website Q4 Rework/.claude/worktrees/feat-design-playground/package.json'
-const require = createRequire(PLAYWRIGHT_HOST)
-const { chromium } = require('playwright')
+  '/Users/enrico/Documents/Frontend/WMIE Frontend/Website Q4 Rework/.claude/worktrees/feat-design-playground/node_modules/@playwright/test/package.json'
+let chromium
+try {
+  ;({ chromium } = createRequire(realpathSync(PLAYWRIGHT_HOST))('playwright'))
+} catch (err) {
+  console.error(
+    `Cannot load playwright from ${PLAYWRIGHT_HOST}.\n` +
+      'Set PLAYWRIGHT_HOST to the package.json of an installed @playwright/test (or playwright) package.',
+  )
+  console.error(err?.message ?? err)
+  process.exit(1)
+}
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {

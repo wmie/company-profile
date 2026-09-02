@@ -168,3 +168,10 @@ C&O 05 · CAO 06 · CAO Events 07 · Tendenze 08 · Collu 09 · Enermed 10 · Gu
 - Cover index jumps to the right chapter slide.
 - Slider pills switch media without frame resize; only one video plays at a time.
 - Mobile hint still shows; swipe navigation unaffected.
+
+## 8. Implementation notes (post-review)
+
+- `src/components/core/useSlideActive.ts` watches the parent `.slide` `data-state`; `SlideVideo` (cover ambient, CAO events) and both sliders play only while their slide is active, so no video decodes off screen in any browser.
+- Sliders keep `autoPlay` on the active item as the browser's own retry path and `preload="metadata"` on the inactive ones (first load no longer downloads every slider video).
+- `content.products.items` is typed (`Product[]` through `productList()`), so a renamed field fails the build; `ProductsSlide` drops a missing product instead of throwing.
+- Headlines of Prodotti and Risultati now come from `content.ts` (`headline` + `headlineAccent`).

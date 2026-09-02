@@ -41,6 +41,18 @@ export type MediaSliderItem = {
   caption?: string
 }
 
+export type Product = {
+  name: string
+  desc: string
+  competence: string
+  grantBadge?: string
+  grant?: string
+  link?: string
+  linkLabel?: string
+}
+/** Typed pass-through: a renamed field in a product literal fails the build. */
+const productList = (items: Product[]): Product[] => items
+
 const videoMockups = [
   { url: 'https://bento.wmie.it/wmie/Documents/portfolio/ceowelcomingitaly.webm', caption: 'C&O Welcoming Italy' },
   { url: 'https://bento.wmie.it/wmie/Documents/portfolio/guilds.webm', caption: 'Guilds' },
@@ -447,9 +459,10 @@ export const content = {
   videoMockups,
 
   products: {
-    headline: 'Costruiamo prima per noi. Poi per voi.',
+    headline: 'Costruiamo prima per noi.',
+    headlineAccent: 'Poi per voi.',
     subtitle: 'We are founders. Ogni competenza che portiamo nei vostri progetti è stata testata prima sui nostri prodotti. Con i nostri soldi, i nostri utenti e i nostri problemi.',
-    items: [
+    items: productList([
       {
         name: 'Swiftrise',
         desc: 'CDN per codice e asset costruita sopra Amazon CloudFront: zero cache sul browser, tutto all\'edge, purge con effetto immediato.',
@@ -484,12 +497,13 @@ export const content = {
         desc: 'SaaS Shopify per scrivere automazioni in codice e provarle in dry run prima di applicarle al catalogo. Nato dal lavoro su Tendenze Store, oggi sullo Shopify App Store.',
         competence: 'Da un problema di un cliente a un prodotto a mercato; sicurezza operativa sugli store Shopify Plus.',
       },
-    ],
+    ]),
     bottomText: 'Ogni problema che incontriamo e risolviamo su un nostro prodotto diventa un pattern che replichiamo nei progetti cliente.',
   },
 
   results: {
-    headline: 'Non solo clienti. Risultati.',
+    headline: 'Non solo clienti.',
+    headlineAccent: 'Risultati.',
     clients: [
       {
         name: 'C&O Welcoming Italy',

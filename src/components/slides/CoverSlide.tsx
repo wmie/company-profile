@@ -1,7 +1,6 @@
 import React from 'react'
 import { content } from '../../data/content'
-
-const OFFICE_IMG = 'https://etechusbc.com/web/image/1309-a686a4f2/ingresso_cover.webp'
+import { SlideVideo } from '../core/SlideVideo'
 
 export type CoverChapter = { label: string; slide: number }
 
@@ -13,15 +12,20 @@ type CoverSlideProps = {
 export const CoverSlide: React.FC<CoverSlideProps> = ({ chapters }) => {
   return (
     <>
-      {/* Background image with fade overlay for contrast */}
-      <div
-        className="absolute inset-0 z-[1]"
-        style={{
-          backgroundImage: `url(${OFFICE_IMG})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
+      {/* Ambient background video with fade overlays for contrast */}
+      <div className="absolute inset-0 z-[1]" style={{ overflow: 'hidden' }}>
+        <SlideVideo
+          src={content.cover.ambientVideo}
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            opacity: 0.35,
+          }}
+        />
         {/* Dark gradient overlay — strong left-to-right fade for text readability */}
         <div
           className="absolute inset-0"

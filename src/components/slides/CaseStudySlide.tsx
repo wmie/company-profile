@@ -8,7 +8,7 @@ const interventionIcons = [Globe, Layers, TrendingUp]
 export const CaseStudySlide: React.FC = () => {
   return (
     <div className="p-12 max-w-[1400px] mx-auto w-full relative z-[2] h-full flex flex-col">
-      <SectionLabel number="04" text="Case Study" className="reveal reveal-d1" />
+      <SectionLabel number="05" text="Case Study" className="reveal reveal-d1" />
 
       <div className="reveal reveal-d1 mb-2">
         <h2 className="font-display text-[36px] font-semibold leading-[1.1] tracking-[-0.02em] text-neutral-100">

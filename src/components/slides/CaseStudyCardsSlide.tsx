@@ -11,7 +11,7 @@ const interventionItems = [
 export const CaseStudyCardsSlide: React.FC = () => {
   return (
     <div className="p-12 max-w-[1400px] mx-auto w-full relative z-[2] h-full flex flex-col">
-      <SectionLabel number="09" text="Prodotto interno" className="reveal reveal-d1" />
+      <SectionLabel number="14" text="Prodotto interno" className="reveal reveal-d1" />
 
       <div className="reveal reveal-d1 mb-2">
         <h2 className="font-display text-[34px] font-semibold leading-[1.1] tracking-[-0.02em] text-neutral-100">
